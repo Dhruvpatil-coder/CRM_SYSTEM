@@ -1,4 +1,4 @@
-# 🌿 CSR Summit 2025 — CRM System
+# 🌿 CSR Summit 2026 — CRM System
 
 Complete attendee management system for the June 5 CSR Summit.  
 Built with: **React** (frontend) + **FastAPI** (backend) + **Google Sheets** + **Excel export**
