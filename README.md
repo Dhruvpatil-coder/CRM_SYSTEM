@@ -1,5 +1,5 @@
-# CSR Summit 2025 — CRM System
-**Event Date: June 5, 2025**
+# CSR Summit 2026 — CRM System
+**Event Date: June 5, 2026**
 
 ## Quick Start
 ```bash
@@ -8,26 +8,6 @@ pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 # Then open frontend/index.html in your browser
 ```
-
----
-
-## 🆔 ID System
-
-| Format | Meaning | Example |
-|--------|---------|---------|
-| `PRE-0001` | Individual pre-registration | PRE-0001, PRE-0002… |
-| `GRP-001-01` | Group pre-reg, group 001, member 1 | GRP-001-01, GRP-001-02, GRP-001-03 |
-| `WIN-0001` | Individual walk-in | WIN-0001, WIN-0002… |
-| `WGP-001-01` | Group walk-in, group 001, member 1 | WGP-001-01, WGP-001-02 |
-| `SPK-001` | Speaker | SPK-001, SPK-002… |
-
-**Group IDs explained:**
-- All members of a group share the same group prefix (e.g. `GRP-001`)
-- Each member gets a unique ID where only the last 2 digits change (`GRP-001-01`, `GRP-001-02`, `GRP-001-03`)
-- Search `GRP-001` in ID Lookup → shows all members of that group
-
----
-
 ## 🔍 ID Lookup Tab
 - Type `PRE-0005` → shows that specific person
 - Type `GRP-001` → shows ALL members of group 001
