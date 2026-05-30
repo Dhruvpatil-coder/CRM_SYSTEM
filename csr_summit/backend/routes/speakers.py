@@ -1,21 +1,37 @@
 # ── Speakers ─────────────────────────────────────────────────────────────────
 from datetime import datetime
-from streamlit import App
-from csr_summit.backend.database import load_data, save_data
-from csr_summit.backend.schemas import Speaker
+from supabase_client import supabase
+from schemas import Speaker
+from fastapi import APIRouter
+router = APIRouter()
 
+@router.get("/api/speakers")
+def get_speakers():
+    return supabase.table("speakers").select("*").execute().data
 
-@App.get("/api/speakers")
-def get_speakers(): return load_data()["speakers"]
-
-@App.post("/api/speakers")
+@router.post("/api/speakers")
 def add_speaker(s: Speaker):
-    d = load_data()
-    r = {"id": f"SPK-{len(d['speakers'])+1:03d}", **s.dict(), "added_at": datetime.now().isoformat()}
-    d["speakers"].append(r); save_data(d); return r
 
-@App.delete("/api/speakers/{sid}")
+    record = {
+        "id": None,
+        "name": s.name,
+        "designation": s.designation,
+        "organization": s.organization,
+        "topic": s.topic,
+        "session_time": s.session_time,
+        "bio": s.bio
+    }
+
+    return supabase.table("speakers").insert(record).execute().data
+
+@router.delete("/api/speakers/{sid}")
 def del_speaker(sid: str):
-    d = load_data()
-    d["speakers"] = [s for s in d["speakers"] if s["id"] != sid]
-    save_data(d); return {"ok": True}
+    result = (
+        supabase
+        .table("speakers")
+        .delete()
+        .eq("id", sid)
+        .execute()
+    )
+
+    return {"ok": True}
