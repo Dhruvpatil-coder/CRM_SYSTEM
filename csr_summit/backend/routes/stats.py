@@ -5,12 +5,21 @@ router = APIRouter()
 
 @router.get("/api/stats")
 def get_stats():
-
     attendees = supabase.table("attendees").select("*").execute().data
-    speakers = supabase.table("speakers").select("*").execute().data
+    speakers  = supabase.table("speakers").select("*").execute().data
+
+    pre      = [a for a in attendees if a.get("type") == "pre-registered"]
+    walk_ins = [a for a in attendees if a.get("type") == "walk-in"]
+    checked  = [a for a in attendees if a.get("checked_in")]
 
     return {
-        "attendees": len(attendees),
-        "speakers": len(speakers),
-        "checked_in": len([a for a in attendees if a.get("checked_in")])
+        # used by sidebar badges
+        "pre_registered": len(pre),
+        "walk_ins":       len(walk_ins),
+        "total":          len(attendees),
+        "checked_in":     len(checked),
+        "pending":        len(attendees) - len(checked),
+        "speakers":       len(speakers),
+        # legacy key kept for dashboard card
+        "attendees":      len(attendees),
     }
