@@ -6,7 +6,7 @@ app = FastAPI(title="CSR Summit CRM")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://your-netlify-site.netlify.app"],
+    allow_origins=["https://crmsystem1.netlify.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
