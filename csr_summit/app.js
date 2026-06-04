@@ -1,5 +1,5 @@
 const { useState, useEffect, useCallback } = React;
-const API = "http://localhost:8000";
+const API = "https://crmsystem-nayanai-production.up.railway.app";
 
 const SUPABASE_URL  = "https://ryrkxxvpfhzzxjnortii.supabase.co";   // ← your URL
 const SUPABASE_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5cmt4eHZwZmh6enhqbm9ydGlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTQ0ODEsImV4cCI6MjA5NTY5MDQ4MX0.sxu6-TKTZC2VIaOxqF4kOipc9-GMFEy6HgBaJ8bBW_Y";                // ← your anon key
