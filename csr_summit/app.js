@@ -1,21 +1,21 @@
 const { useState, useEffect, useCallback } = React;
 const API = "https://crmsystem-nayanai-production.up.railway.app";
 
-const SUPABASE_URL  = "https://ryrkxxvpfhzzxjnortii.supabase.co";   // ← your URL
-const SUPABASE_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5cmt4eHZwZmh6enhqbm9ydGlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTQ0ODEsImV4cCI6MjA5NTY5MDQ4MX0.sxu6-TKTZC2VIaOxqF4kOipc9-GMFEy6HgBaJ8bBW_Y";                // ← your anon key
+const SUPABASE_URL = "https://ryrkxxvpfhzzxjnortii.supabase.co";   // ← your URL
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5cmt4eHZwZmh6enhqbm9ydGlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTQ0ODEsImV4cCI6MjA5NTY5MDQ4MX0.sxu6-TKTZC2VIaOxqF4kOipc9-GMFEy6HgBaJ8bBW_Y";                // ← your anon key
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const api = async (path, opts = {}) => {
-  try {
-    const r = await fetch(API + path, { headers: { "Content-Type": "application/json" }, ...opts });
-    return r.ok ? r.json() : null;
-  } catch { return null; }
+    try {
+        const r = await fetch(API + path, { headers: { "Content-Type": "application/json" }, ...opts });
+        return r.ok ? r.json() : null;
+    } catch { return null; }
 };
 
 function avatarColor(name) {
-  if (!name) return "#6b7280";
-  const colors = ["#7c3aed", "#2563eb", "#0891b2", "#059669", "#dc2626", "#d97706"];
-  return colors[String(name).charCodeAt(0) % colors.length];
+    if (!name) return "#6b7280";
+    const colors = ["#7c3aed", "#2563eb", "#0891b2", "#059669", "#dc2626", "#d97706"];
+    return colors[String(name).charCodeAt(0) % colors.length];
 }
 const initials = (n = "") => n.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
 const fmtTime = (s) => s ? new Date().toISOString() > s ? new Date(s).toLocaleString("en-IN", { dateStyle: "short", timeZone: "Asia/Kolkata", timeStyle: "short" }) : "Today" : "—";
@@ -24,936 +24,936 @@ const LOGO_SRC = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1B
 
 // ── DASHBOARD ────────────────────────────────────────────────────────────────
 function Dashboard({ stats, setTab }) {
-  return (
-    <div>
-      <div className="topbar">
+    return (
         <div>
-          <h2>CSR Summit 2026</h2>
-          <div className="sub">June 5, 2026 · Event Command Center · events@unnatva.org</div>
-        </div>
-        <div style={{ display: "flex", gap: 10 }}>
-          <button className="btn btn-outline" onClick={() => window.open(API + "/api/export/excel?type=all")}>
-            ⬇ Export Excel
-          </button>
-        </div>
-      </div>
+            <div className="topbar">
+                <div>
+                    <h2>CSR Summit 2026</h2>
+                    <div className="sub">June 5, 2026 · Event Command Center · events@unnatva.org</div>
+                </div>
+                <div style={{ display: "flex", gap: 10 }}>
+                    <button className="btn btn-outline" onClick={() => window.open(API + "/api/export/excel?type=all")}>
+                        ⬇ Export Excel
+                    </button>
+                </div>
+            </div>
 
-      <div className="qs-bar">
-        <div className="qs-item"><div className="qs-label">Total Registered</div><div className="qs-val">{stats.total ?? "—"}</div></div>
-        <div className="qs-divider" />
-        <div className="qs-item"><div className="qs-label">Checked In</div><div className="qs-val">{stats.checked_in ?? "—"}</div></div>
-        <div className="qs-divider" />
-        <div className="qs-item"><div className="qs-label">Pending</div><div className="qs-val">{stats.pending ?? "—"}</div></div>
-        <div className="qs-divider" />
-        <div className="qs-item"><div className="qs-label">Speakers</div><div className="qs-val">{stats.speakers ?? "—"}</div></div>
-      </div>
+            <div className="qs-bar">
+                <div className="qs-item"><div className="qs-label">Total Registered</div><div className="qs-val">{stats.total ?? "—"}</div></div>
+                <div className="qs-divider" />
+                <div className="qs-item"><div className="qs-label">Checked In</div><div className="qs-val">{stats.checked_in ?? "—"}</div></div>
+                <div className="qs-divider" />
+                <div className="qs-item"><div className="qs-label">Pending</div><div className="qs-val">{stats.pending ?? "—"}</div></div>
+                <div className="qs-divider" />
+                <div className="qs-item"><div className="qs-label">Speakers</div><div className="qs-val">{stats.speakers ?? "—"}</div></div>
+            </div>
 
-      <div className="stat-grid">
-        {[
-          { label: "Pre-Registered", value: stats.pre_registered, cls: "v-purple", icon: "📋", tab: "pre" },
-          { label: "Walk-Ins", value: stats.walk_ins, cls: "v-amber", icon: "🚶", tab: "walkin" },
-          { label: "Total Attendees", value: stats.total, cls: "v-text", icon: "👥", tab: "attendance" },
-          { label: "Checked In", value: stats.checked_in, cls: "v-green", icon: "✅", tab: "attendance" },
-          { label: "Pending", value: stats.pending, cls: "v-red", icon: "⏳", tab: "attendance" },
-          { label: "Speakers", value: stats.speakers, cls: "v-purple", icon: "🎤", tab: "speakers" },
-        ].map(s => (
-          <div key={s.label} className="stat-card" onClick={() => setTab(s.tab)}>
-            <div className="s-icon">{s.icon}</div>
-            <div className="label">{s.label}</div>
-            <div className={`value ${s.cls}`}>{s.value ?? "—"}</div>
-            <div className="sub-val">view details →</div>
-          </div>
-        ))}
-      </div>
+            <div className="stat-grid">
+                {[
+                    { label: "Pre-Registered", value: stats.pre_registered, cls: "v-purple", icon: "📋", tab: "pre" },
+                    { label: "Walk-Ins", value: stats.walk_ins, cls: "v-amber", icon: "🚶", tab: "walkin" },
+                    { label: "Total Attendees", value: stats.total, cls: "v-text", icon: "👥", tab: "attendance" },
+                    { label: "Checked In", value: stats.checked_in, cls: "v-green", icon: "✅", tab: "attendance" },
+                    { label: "Pending", value: stats.pending, cls: "v-red", icon: "⏳", tab: "attendance" },
+                    { label: "Speakers", value: stats.speakers, cls: "v-purple", icon: "🎤", tab: "speakers" },
+                ].map(s => (
+                    <div key={s.label} className="stat-card" onClick={() => setTab(s.tab)}>
+                        <div className="s-icon">{s.icon}</div>
+                        <div className="label">{s.label}</div>
+                        <div className={`value ${s.cls}`}>{s.value ?? "—"}</div>
+                        <div className="sub-val">view details →</div>
+                    </div>
+                ))}
+            </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        <div className="card">
-          <div className="card-title">📅 Event Day Flow</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13, color: "var(--text2)", lineHeight: 1.8 }}>
-            <div>1. Pre-registered → <strong style={{ color: "var(--purple)" }}>Pre-Registration tab</strong> → Check In</div>
-            <div>2. New arrivals → <strong style={{ color: "var(--amber)" }}>Walk-In tab</strong> → Auto check-in</div>
-            <div>3. Speakers → <strong style={{ color: "var(--green)" }}>Speakers tab</strong> → Check In speakers</div>
-            <div>4. Search anyone → <strong style={{ color: "var(--purple)" }}>Attendee Search tab</strong></div>
-            <div>5. Export data → <strong style={{ color: "var(--purple)" }}>Excel Export tab</strong></div>
-          </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                <div className="card">
+                    <div className="card-title">📅 Event Day Flow</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13, color: "var(--text2)", lineHeight: 1.8 }}>
+                        <div>1. Pre-registered → <strong style={{ color: "var(--purple)" }}>Pre-Registration tab</strong> → Check In</div>
+                        <div>2. New arrivals → <strong style={{ color: "var(--amber)" }}>Walk-In tab</strong> → Auto check-in</div>
+                        <div>3. Speakers → <strong style={{ color: "var(--green)" }}>Speakers tab</strong> → Check In speakers</div>
+                        <div>4. Search anyone → <strong style={{ color: "var(--purple)" }}>Attendee Search tab</strong></div>
+                        <div>5. Export data → <strong style={{ color: "var(--purple)" }}>Excel Export tab</strong></div>
+                    </div>
+                </div>
+                <div className="card">
+                    <div className="card-title">📧 Contact & Info</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13, color: "var(--text2)", lineHeight: 2 }}>
+                        <div>Email: <strong style={{ color: "var(--purple)" }}>events@unnatva.org</strong></div>
+                        <div>Event: <strong>CSR Summit 2026</strong></div>
+                        <div>Date: <strong>June 5, 2026</strong></div>
+                        <div>Organiser: <strong>Univate Solutions</strong></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div className="card">
-          <div className="card-title">📧 Contact & Info</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13, color: "var(--text2)", lineHeight: 2 }}>
-            <div>Email: <strong style={{ color: "var(--purple)" }}>events@unnatva.org</strong></div>
-            <div>Event: <strong>CSR Summit 2026</strong></div>
-            <div>Date: <strong>June 5, 2026</strong></div>
-            <div>Organiser: <strong>Univate Solutions</strong></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 // ── ATTENDEE SEARCH ──────────────────────────────────────────────────────────
 function AttendeeSearch() {
-  const [q, setQ] = useState("");
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
+    const [q, setQ] = useState("");
+    const [result, setResult] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-  const search = async () => {
-    if (!q.trim()) return;
-    setLoading(true);
-    const r = await api(`/api/search?q=${encodeURIComponent(q.trim())}`);
-    setResult(r);
-    setLoading(false);
-  };
+    const search = async () => {
+        if (!q.trim()) return;
+        setLoading(true);
+        const r = await api(`/api/search?q=${encodeURIComponent(q.trim())}`);
+        setResult(r);
+        setLoading(false);
+    };
 
-  return (
-    <div>
-      <div className="topbar"><div><h2>🔍 Attendee Search</h2><div className="sub">Search any attendee by Name, Mobile Number or Organisation</div></div></div>
-      <div className="search-row">
-        <input className="search-input" placeholder="Search attendee by Name, Mobile Number or Organisation..."
-          value={q} onChange={e => setQ(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && search()}
-          style={{ fontFamily: "'DM Mono',monospace", fontSize: 14 }} />
-        <button className="btn btn-primary" onClick={search}>Search</button>
-        {result && <button className="btn btn-outline" onClick={() => { setResult(null); setQ(""); }}>Clear</button>}
-      </div>
-      {loading && <div className="loading pulse">Searching…</div>}
-      {result && !loading && (
-        <div className="lookup-result">
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-            <div style={{ fontWeight: 700, fontSize: 15 }}>
-              {result.match_type === "group" && <span className="badge b-purple">👥 Group — {result.count} members</span>}
-              {result.match_type === "individual" && <span className="badge b-purple">👤 Individual match</span>}
-              {result.match_type === "name_search" && <span className="badge b-amber">🔎 {result.count} result(s)</span>}
-              {result.match_type === "none" && <span className="badge b-red">❌ No results found</span>}
+    return (
+        <div>
+            <div className="topbar"><div><h2>🔍 Attendee Search</h2><div className="sub">Search any attendee by Name, Mobile Number or Organisation</div></div></div>
+            <div className="search-row">
+                <input className="search-input" placeholder="Search attendee by Name, Mobile Number or Organisation..."
+                    value={q} onChange={e => setQ(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && search()}
+                    style={{ fontFamily: "'DM Mono',monospace", fontSize: 14 }} />
+                <button className="btn btn-primary" onClick={search}>Search</button>
+                {result && <button className="btn btn-outline" onClick={() => { setResult(null); setQ(""); }}>Clear</button>}
             </div>
-            <span style={{ fontSize: 12, color: "var(--text3)" }}>Query: <span style={{ fontFamily: "'DM Mono'", color: "var(--purple)" }}>{result.query}</span></span>
-          </div>
-          {result.results && result.results.map((p, idx) => (
-            <div key={idx} style={{ marginBottom: 12 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
-                <div className="avatar" style={{ background: avatarColor(p.name) }}>{initials(p.name)}</div>
-                <div>
-                  <div className="lookup-name">{p.name}</div>
-                  <div className="lookup-meta">{p.designation} · {p.organization}</div>
+            {loading && <div className="loading pulse">Searching…</div>}
+            {result && !loading && (
+                <div className="lookup-result">
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                        <div style={{ fontWeight: 700, fontSize: 15 }}>
+                            {result.match_type === "group" && <span className="badge b-purple">👥 Group — {result.count} members</span>}
+                            {result.match_type === "individual" && <span className="badge b-purple">👤 Individual match</span>}
+                            {result.match_type === "name_search" && <span className="badge b-amber">🔎 {result.count} result(s)</span>}
+                            {result.match_type === "none" && <span className="badge b-red">❌ No results found</span>}
+                        </div>
+                        <span style={{ fontSize: 12, color: "var(--text3)" }}>Query: <span style={{ fontFamily: "'DM Mono'", color: "var(--purple)" }}>{result.query}</span></span>
+                    </div>
+                    {result.results && result.results.map((p, idx) => (
+                        <div key={idx} style={{ marginBottom: 12 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+                                <div className="avatar" style={{ background: avatarColor(p.name) }}>{initials(p.name)}</div>
+                                <div>
+                                    <div className="lookup-name">{p.name}</div>
+                                    <div className="lookup-meta">{p.designation} · {p.organization}</div>
+                                </div>
+                            </div>
+                            <div className="lookup-grid">
+                                <div className="lookup-field"><div className="lf-key">Email</div><div className="lf-val">{p.email || "—"}</div></div>
+                                <div className="lookup-field"><div className="lf-key">Phone</div><div className="lf-val">{p.phone || "—"}</div></div>
+                                <div className="lookup-field"><div className="lf-key">Type</div><div className="lf-val">{p.type}</div></div>
+                                <div className="lookup-field"><div className="lf-key">Status</div>
+                                    <div className="lf-val">
+                                        {p.checked_in
+                                            ? <span className="badge b-green">✅ Present · {new Date(p.checked_in_time).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</span>
+                                            : <span className="badge b-red">⏳ Not Checked In</span>}
+                                    </div>
+                                </div>
+                                <div className="lookup-field"><div className="lf-key">Registered At</div><div className="lf-val">{new Date(p.registered_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</div></div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
-              </div>
-              <div className="lookup-grid">
-                <div className="lookup-field"><div className="lf-key">Email</div><div className="lf-val">{p.email || "—"}</div></div>
-                <div className="lookup-field"><div className="lf-key">Phone</div><div className="lf-val">{p.phone || "—"}</div></div>
-                <div className="lookup-field"><div className="lf-key">Type</div><div className="lf-val">{p.type}</div></div>
-                <div className="lookup-field"><div className="lf-key">Status</div>
-                  <div className="lf-val">
-                    {p.checked_in
-                      ? <span className="badge b-green">✅ Present · {new Date(p.checked_in_time).toLocaleString("en-IN", {timeZone: "Asia/Kolkata"})}{new Date().toISOString()}</span>
-                      : <span className="badge b-red">⏳ Not Checked In</span>}
-                  </div>
-                </div>
-                <div className="lookup-field"><div className="lf-key">Registered At</div><div className="lf-val">{new Date(p.registered_at).toLocaleString("en-IN", {timeZone: "Asia/Kolkata"})}{new Date().toISOString()}</div></div>
-              </div>
-            </div>
-          ))}
+            )}
+            {!result && !loading && (
+                <div className="empty"><div className="ei">🔍</div><p>Enter a phone no. or name above to look up an attendee</p></div>
+            )}
         </div>
-      )}
-      {!result && !loading && (
-        <div className="empty"><div className="ei">🔍</div><p>Enter a phone no. or name above to look up an attendee</p></div>
-      )}
-    </div>
-  );
+    );
 }
 
 // ── ADD PERSON MODAL (Pre-Registration) ──────────────────────────────────────
 function AddPersonModal({ onClose, onAdded }) {
-  const [isGroup, setIsGroup] = useState(false);
-  const [org, setOrg] = useState("");
-  const [form, setForm] = useState({ name: "", email: "", phone: "", organization: "", designation: "" });
-  const [members, setMembers] = useState([{ name: "", email: "", phone: "", designation: "" }]);
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState("");
+    const [isGroup, setIsGroup] = useState(false);
+    const [org, setOrg] = useState("");
+    const [form, setForm] = useState({ name: "", email: "", phone: "", organization: "", designation: "" });
+    const [members, setMembers] = useState([{ name: "", email: "", phone: "", designation: "" }]);
+    const [loading, setLoading] = useState(false);
+    const [err, setErr] = useState("");
 
-  const addMember = () => setMembers(m => [...m, { name: "", email: "", phone: "", designation: "" }]);
-  const removeMember = (i) => setMembers(m => m.filter((_, j) => j !== i));
-  const setMember = (i, k, v) => setMembers(m => m.map((r, j) => j === i ? { ...r, [k]: v } : r));
+    const addMember = () => setMembers(m => [...m, { name: "", email: "", phone: "", designation: "" }]);
+    const removeMember = (i) => setMembers(m => m.filter((_, j) => j !== i));
+    const setMember = (i, k, v) => setMembers(m => m.map((r, j) => j === i ? { ...r, [k]: v } : r));
 
-  const validate = () => {
-    if (isGroup) {
-      if (!org.trim()) return "Organisation is required.";
-      for (let i = 0; i < members.length; i++) {
-        const m = members[i];
-        if (!m.name.trim()) return `Member ${i + 1}: Name is required.`;
-        if (!m.email.trim()) return `Member ${i + 1}: Email is required.`;
-        if (!m.phone.trim()) return `Member ${i + 1}: Phone is required.`;
-        if (!m.designation.trim()) return `Member ${i + 1}: Designation is required.`;
-      }
-    } else {
-      if (!form.name.trim()) return "Name is required.";
-      if (!form.email.trim()) return "Email is required.";
-      if (!form.phone.trim()) return "Phone is required.";
-      if (!form.organization.trim()) return "Organisation is required.";
-      if (!form.designation.trim()) return "Designation is required.";
-    }
-    return "";
-  };
+    const validate = () => {
+        if (isGroup) {
+            if (!org.trim()) return "Organisation is required.";
+            for (let i = 0; i < members.length; i++) {
+                const m = members[i];
+                if (!m.name.trim()) return `Member ${i + 1}: Name is required.`;
+                if (!m.email.trim()) return `Member ${i + 1}: Email is required.`;
+                if (!m.phone.trim()) return `Member ${i + 1}: Phone is required.`;
+                if (!m.designation.trim()) return `Member ${i + 1}: Designation is required.`;
+            }
+        } else {
+            if (!form.name.trim()) return "Name is required.";
+            if (!form.email.trim()) return "Email is required.";
+            if (!form.phone.trim()) return "Phone is required.";
+            if (!form.organization.trim()) return "Organisation is required.";
+            if (!form.designation.trim()) return "Designation is required.";
+        }
+        return "";
+    };
 
-  const submit = async () => {
-    const e = validate();
-    if (e) { setErr(e); return; }
-    setErr(""); setLoading(true);
-    let body;
-    if (isGroup) {
-      body = {
-        is_group: true,
-        group_member_count: members.length,
-        group_organization: org,
-        group_members: members.map(m => ({ ...m, organization: org })),
-      };
-    } else {
-      body = {
-        is_group: false, ...form
-      };
-    }
-    const r = await api("/api/pre-registered", { method: "POST", body: JSON.stringify(body) });
-    setLoading(false);
-    if (r) { onAdded(r); onClose(); }
-  };
+    const submit = async () => {
+        const e = validate();
+        if (e) { setErr(e); return; }
+        setErr(""); setLoading(true);
+        let body;
+        if (isGroup) {
+            body = {
+                is_group: true,
+                group_member_count: members.length,
+                group_organization: org,
+                group_members: members.map(m => ({ ...m, organization: org })),
+            };
+        } else {
+            body = {
+                is_group: false, ...form
+            };
+        }
+        const r = await api("/api/pre-registered", { method: "POST", body: JSON.stringify(body) });
+        setLoading(false);
+        if (r) { onAdded(r); onClose(); }
+    };
 
-  const Req = () => <span className="required-star">*</span>;
+    const Req = () => <span className="required-star">*</span>;
 
-  return (
-    <div className="modal-bg" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal">
-        <div className="modal-header">
-          <h3>➕ Add Pre-Registration</h3>
-          <button className="modal-close" onClick={onClose}>✕</button>
-        </div>
-        <div className="toggle-row">
-          <span className="toggle-label">👥 Group Registration</span>
-          <label className="toggle"><input type="checkbox" checked={isGroup} onChange={e => setIsGroup(e.target.checked)} /><span className="toggle-slider" /></label>
-          {isGroup && <span style={{ fontSize: 12, color: "var(--purple)" }}>{members.length} member{members.length !== 1 ? "s" : ""}</span>}
-        </div>
-        {err && <div style={{ color: "var(--red)", fontSize: 12, marginBottom: 10, padding: "8px 12px", background: "var(--red-glow)", borderRadius: 7, border: "1px solid rgba(220,38,38,.2)" }}>⚠ {err}</div>}
-        {isGroup ? (
-          <>
-            <div className="form-group" style={{ marginBottom: 14 }}>
-              <label>Organisation (common for all) <Req /></label>
-              <input value={org} onChange={e => setOrg(e.target.value)} placeholder="Company / Organisation" required />
-            </div>
-            <div className="member-rows">
-              {members.map((m, i) => (
-                <div key={i} className="member-row">
-                  <div className="member-row-header">
-                    <span className="member-num">MEMBER {String(i + 1).padStart(2, "0")}</span>
-                    {i > 0 && <button className="btn btn-ghost btn-sm" onClick={() => removeMember(i)}>✕ Remove</button>}
-                  </div>
-                  <div className="form-grid">
-                    <div className="form-group"><label>Name <Req /></label><input value={m.name} onChange={e => setMember(i, "name", e.target.value)} placeholder="Full name" /></div>
-                    <div className="form-group"><label>Designation <Req /></label><input value={m.designation} onChange={e => setMember(i, "designation", e.target.value)} placeholder="Job title" /></div>
-                    <div className="form-group"><label>Email <Req /></label><input type="email" value={m.email} onChange={e => setMember(i, "email", e.target.value)} placeholder="email@example.com" /></div>
-                    <div className="form-group"><label>Phone <Req /></label><input value={m.phone} onChange={e => setMember(i, "phone", e.target.value)} placeholder="+91 …" /></div>
-                  </div>
+    return (
+        <div className="modal-bg" onClick={e => e.target === e.currentTarget && onClose()}>
+            <div className="modal">
+                <div className="modal-header">
+                    <h3>➕ Add Pre-Registration</h3>
+                    <button className="modal-close" onClick={onClose}>✕</button>
                 </div>
-              ))}
+                <div className="toggle-row">
+                    <span className="toggle-label">👥 Group Registration</span>
+                    <label className="toggle"><input type="checkbox" checked={isGroup} onChange={e => setIsGroup(e.target.checked)} /><span className="toggle-slider" /></label>
+                    {isGroup && <span style={{ fontSize: 12, color: "var(--purple)" }}>{members.length} member{members.length !== 1 ? "s" : ""}</span>}
+                </div>
+                {err && <div style={{ color: "var(--red)", fontSize: 12, marginBottom: 10, padding: "8px 12px", background: "var(--red-glow)", borderRadius: 7, border: "1px solid rgba(220,38,38,.2)" }}>⚠ {err}</div>}
+                {isGroup ? (
+                    <>
+                        <div className="form-group" style={{ marginBottom: 14 }}>
+                            <label>Organisation (common for all) <Req /></label>
+                            <input value={org} onChange={e => setOrg(e.target.value)} placeholder="Company / Organisation" required />
+                        </div>
+                        <div className="member-rows">
+                            {members.map((m, i) => (
+                                <div key={i} className="member-row">
+                                    <div className="member-row-header">
+                                        <span className="member-num">MEMBER {String(i + 1).padStart(2, "0")}</span>
+                                        {i > 0 && <button className="btn btn-ghost btn-sm" onClick={() => removeMember(i)}>✕ Remove</button>}
+                                    </div>
+                                    <div className="form-grid">
+                                        <div className="form-group"><label>Name <Req /></label><input value={m.name} onChange={e => setMember(i, "name", e.target.value)} placeholder="Full name" /></div>
+                                        <div className="form-group"><label>Designation <Req /></label><input value={m.designation} onChange={e => setMember(i, "designation", e.target.value)} placeholder="Job title" /></div>
+                                        <div className="form-group"><label>Email <Req /></label><input type="email" value={m.email} onChange={e => setMember(i, "email", e.target.value)} placeholder="email@example.com" /></div>
+                                        <div className="form-group"><label>Phone <Req /></label><input value={m.phone} onChange={e => setMember(i, "phone", e.target.value)} placeholder="+91 …" /></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <button className="btn btn-outline" style={{ width: "100%" }} onClick={addMember}>+ Add Member</button>
+                    </>
+                ) : (
+                    <div className="form-grid">
+                        <div className="form-group"><label>Name <Req /></label><input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Full name" /></div>
+                        <div className="form-group"><label>Email <Req /></label><input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="email@example.com" /></div>
+                        <div className="form-group"><label>Phone <Req /></label><input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+91 …" /></div>
+                        <div className="form-group"><label>Organisation <Req /></label><input value={form.organization} onChange={e => setForm(f => ({ ...f, organization: e.target.value }))} placeholder="Company" /></div>
+                        <div className="form-group" style={{ gridColumn: "1/-1" }}><label>Designation <Req /></label><input value={form.designation} onChange={e => setForm(f => ({ ...f, designation: e.target.value }))} placeholder="Job title" /></div>
+                    </div>
+                )}
+                <div className="form-actions">
+                    <button className="btn btn-outline" onClick={onClose}>Cancel</button>
+                    <button className="btn btn-primary" onClick={submit} disabled={loading}>
+                        {loading ? "Saving…" : isGroup ? `Register ${members.length} Members` : "Register"}
+                    </button>
+                </div>
             </div>
-            <button className="btn btn-outline" style={{ width: "100%" }} onClick={addMember}>+ Add Member</button>
-          </>
-        ) : (
-          <div className="form-grid">
-            <div className="form-group"><label>Name <Req /></label><input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Full name" /></div>
-            <div className="form-group"><label>Email <Req /></label><input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="email@example.com" /></div>
-            <div className="form-group"><label>Phone <Req /></label><input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+91 …" /></div>
-            <div className="form-group"><label>Organisation <Req /></label><input value={form.organization} onChange={e => setForm(f => ({ ...f, organization: e.target.value }))} placeholder="Company" /></div>
-            <div className="form-group" style={{ gridColumn: "1/-1" }}><label>Designation <Req /></label><input value={form.designation} onChange={e => setForm(f => ({ ...f, designation: e.target.value }))} placeholder="Job title" /></div>
-          </div>
-        )}
-        <div className="form-actions">
-          <button className="btn btn-outline" onClick={onClose}>Cancel</button>
-          <button className="btn btn-primary" onClick={submit} disabled={loading}>
-            {loading ? "Saving…" : isGroup ? `Register ${members.length} Members` : "Register"}
-          </button>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 // ── PRE-REGISTRATION ──────────────────────────────────────────────────────────
 function PreRegistration({ onDataChange }) {
-  const [data, setData] = useState([]);
-  const [search, setSearch] = useState("");
-  const [modal, setModal] = useState(false);
-  const [loading, setLoading] = useState(true);
+    const [data, setData] = useState([]);
+    const [search, setSearch] = useState("");
+    const [modal, setModal] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-  const load = async () => {
-    setLoading(true);
-    const r = await api("/api/pre-registered");
-    if (r) setData(r);
-    setLoading(false);
-  };
-  useEffect(() => {
-  load();
-  const channel = sb.channel("pre-reg-live")
-    .on("postgres_changes", { event: "*", schema: "public", table: "attendees" },
-      () => load()
-    )
-    .subscribe();
-  return () => sb.removeChannel(channel);
-}, []);
+    const load = async () => {
+        setLoading(true);
+        const r = await api("/api/pre-registered");
+        if (r) setData(r);
+        setLoading(false);
+    };
+    useEffect(() => {
+        load();
+        const channel = sb.channel("pre-reg-live")
+            .on("postgres_changes", { event: "*", schema: "public", table: "attendees" },
+                () => load()
+            )
+            .subscribe();
+        return () => sb.removeChannel(channel);
+    }, []);
 
-  const toggle = async (p) => {
-    const key = p.phone;
-    const r = await api(`/api/pre-registered/${encodeURIComponent(key)}`, { method: "PATCH" });
-    if (r) { setData(d => d.map(x => x.phone === p.phone ? {...x, checked_in: !x.checked_in} : x)); }
-  onDataChange();
-  };
+    const toggle = async (p) => {
+        const key = p.phone;
+        const r = await api(`/api/pre-registered/${encodeURIComponent(key)}`, { method: "PATCH" });
+        if (r) { setData(d => d.map(x => x.phone === p.phone ? { ...x, checked_in: !x.checked_in } : x)); }
+        onDataChange();
+    };
 
-  const del = async (p) => {
-    if (!confirm("Delete this record?")) return;
-    await api(`/api/pre-registered/${encodeURIComponent(p.phone)}`, { method: "DELETE" });
-    setData(d => d.filter(x => x.phone !== p.phone));
-    onDataChange();
-  };
+    const del = async (p) => {
+        if (!confirm("Delete this record?")) return;
+        await api(`/api/pre-registered/${encodeURIComponent(p.phone)}`, { method: "DELETE" });
+        setData(d => d.filter(x => x.phone !== p.phone));
+        onDataChange();
+    };
 
-  const filtered = data.filter(p =>
-    [p.name, p.email || "", p.organization || "", p.phone || "", p.designation || ""]
-      .some(v => String(v || "").toLowerCase().includes(String(search || "").toLowerCase()))
-  );
-  const checked = data.filter(p => p.checked_in).length;
+    const filtered = data.filter(p =>
+        [p.name, p.email || "", p.organization || "", p.phone || "", p.designation || ""]
+            .some(v => String(v || "").toLowerCase().includes(String(search || "").toLowerCase()))
+    );
+    const checked = data.filter(p => p.checked_in).length;
 
-  return (
-    <div>
-      <div className="topbar">
+    return (
         <div>
-          <h2>📋 Pre-Registration</h2>
-          <div className="sub">{data.length} registered · {checked} checked in · {data.length - checked} pending</div>
+            <div className="topbar">
+                <div>
+                    <h2>📋 Pre-Registration</h2>
+                    <div className="sub">{data.length} registered · {checked} checked in · {data.length - checked} pending</div>
+                </div>
+                <button className="btn btn-primary" onClick={() => setModal(true)}>+ Add Registration</button>
+            </div>
+            <div className="search-row">
+                <input className="search-input" placeholder="Search by name, phone no., org, email…"
+                    value={search} onChange={e => setSearch(e.target.value)} />
+                <span style={{ fontSize: 12, color: "var(--text3)", whiteSpace: "nowrap" }}>{filtered.length} shown</span>
+            </div>
+            <div className="card" style={{ padding: 0 }}>
+                <div className="tbl-wrap">
+                    {loading ? <div className="loading pulse">Loading…</div> :
+                        filtered.length === 0 ? <div className="empty"><div className="ei">📋</div><p>No records match</p></div> :
+                            <table>
+                                <thead><tr>
+                                    <th>Name</th>
+                                    <th>Organisation</th>
+                                    <th>Designation</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Group</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr></thead>
+                                <tbody>
+                                    {filtered.map((p, idx) => (
+                                        <tr key={idx}>
+                                            <td>
+                                                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                                    <div className="avatar" style={{ width: 28, height: 28, fontSize: 11, background: avatarColor(p.name) }}>{initials(p.name)}</div>
+                                                    <span style={{ fontWeight: 600, color: "var(--text)" }}>{p.name}</span>
+                                                </div>
+                                            </td>
+                                            <td>{p.organization || "—"}</td>
+                                            <td style={{ fontSize: 12 }}>{p.designation || "—"}</td>
+                                            <td style={{ fontSize: 12 }}>{p.email || "—"}</td>
+                                            <td style={{ fontSize: 12 }}>{p.phone || "—"}</td>
+                                            <td style={{ fontSize: 12 }}>
+                                                {p.is_group
+                                                    ? <span className="badge b-purple">👥 {p.group_member_count || ""} members</span>
+                                                    : <span className="badge b-amber">👤 Individual</span>}
+                                            </td>
+                                            <td>
+                                                {p.checked_in
+                                                    ? <span className="badge b-green">✅ Present</span>
+                                                    : <span className="badge b-red">⏳ Pending</span>}
+                                            </td>
+                                            <td>
+                                                <div style={{ display: "flex", gap: 6 }}>
+                                                    <button className={`btn btn-sm ${p.checked_in ? "btn-outline" : "btn-green"}`} onClick={() => toggle(p)}>
+                                                        {p.checked_in ? "Undo" : "Check In"}
+                                                    </button>
+                                                    <button className="btn btn-sm btn-red" onClick={() => del(p)}>✕</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>}
+                </div>
+            </div>
+            {modal && <AddPersonModal onClose={() => setModal(false)} onAdded={() => { load(); onDataChange(); }} />}
         </div>
-        <button className="btn btn-primary" onClick={() => setModal(true)}>+ Add Registration</button>
-      </div>
-      <div className="search-row">
-        <input className="search-input" placeholder="Search by name, phone no., org, email…"
-          value={search} onChange={e => setSearch(e.target.value)} />
-        <span style={{ fontSize: 12, color: "var(--text3)", whiteSpace: "nowrap" }}>{filtered.length} shown</span>
-      </div>
-      <div className="card" style={{ padding: 0 }}>
-        <div className="tbl-wrap">
-          {loading ? <div className="loading pulse">Loading…</div> :
-            filtered.length === 0 ? <div className="empty"><div className="ei">📋</div><p>No records match</p></div> :
-              <table>
-                <thead><tr>
-                  <th>Name</th>
-                  <th>Organisation</th>
-                  <th>Designation</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Group</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr></thead>
-                <tbody>
-                  {filtered.map((p, idx) => (
-                    <tr key={idx}>
-                      <td>
-                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <div className="avatar" style={{ width: 28, height: 28, fontSize: 11, background: avatarColor(p.name) }}>{initials(p.name)}</div>
-                          <span style={{ fontWeight: 600, color: "var(--text)" }}>{p.name}</span>
-                        </div>
-                      </td>
-                      <td>{p.organization || "—"}</td>
-                      <td style={{ fontSize: 12 }}>{p.designation || "—"}</td>
-                      <td style={{ fontSize: 12 }}>{p.email || "—"}</td>
-                      <td style={{ fontSize: 12 }}>{p.phone || "—"}</td>
-                      <td style={{ fontSize: 12 }}>
-                        {p.is_group
-                          ? <span className="badge b-purple">👥 {p.group_member_count || ""} members</span>
-                          : <span className="badge b-amber">👤 Individual</span>}
-                      </td>
-                      <td>
-                        {p.checked_in
-                          ? <span className="badge b-green">✅ Present</span>
-                          : <span className="badge b-red">⏳ Pending</span>}
-                      </td>
-                      <td>
-                        <div style={{ display: "flex", gap: 6 }}>
-                          <button className={`btn btn-sm ${p.checked_in ? "btn-outline" : "btn-green"}`} onClick={() => toggle(p)}>
-                            {p.checked_in ? "Undo" : "Check In"}
-                          </button>
-                          <button className="btn btn-sm btn-red" onClick={() => del(p)}>✕</button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>}
-        </div>
-      </div>
-      {modal && <AddPersonModal onClose={() => setModal(false)} onAdded={() => { load(); onDataChange(); }} />}
-    </div>
-  );
+    );
 }
 
 // ── WALK-IN ───────────────────────────────────────────────────────────────────
 function WalkIn({ onDataChange }) {
-  const [data, setData] = useState([]);
-  const [isGroup, setIsGroup] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", organization: "", designation: "" });
-  const [org, setOrg] = useState("");
-  const [members, setMembers] = useState([{ name: "", email: "", phone: "", designation: "" }]);
-  const [loading, setLoading] = useState(false);
-  const [lastAdded, setLastAdded] = useState(null);
-  const [err, setErr] = useState("");
-  const [payment, setPayment] = useState({ mode: "", amount: "", status: "paid" });
+    const [data, setData] = useState([]);
+    const [isGroup, setIsGroup] = useState(false);
+    const [form, setForm] = useState({ name: "", email: "", phone: "", organization: "", designation: "" });
+    const [org, setOrg] = useState("");
+    const [members, setMembers] = useState([{ name: "", email: "", phone: "", designation: "" }]);
+    const [loading, setLoading] = useState(false);
+    const [lastAdded, setLastAdded] = useState(null);
+    const [err, setErr] = useState("");
+    const [payment, setPayment] = useState({ mode: "", amount: "", status: "paid" });
 
-  const load = async () => { const r = await api("/api/walk-ins"); if (r) setData(r); };
-  useEffect(() => {
-  load();
-  const channel = sb.channel("walkin-live")
-    .on("postgres_changes", { event: "*", schema: "public", table: "attendees" },
-      () => load()
-    )
-    .subscribe();
-  return () => sb.removeChannel(channel);
-}, []);
+    const load = async () => { const r = await api("/api/walk-ins"); if (r) setData(r); };
+    useEffect(() => {
+        load();
+        const channel = sb.channel("walkin-live")
+            .on("postgres_changes", { event: "*", schema: "public", table: "attendees" },
+                () => load()
+            )
+            .subscribe();
+        return () => sb.removeChannel(channel);
+    }, []);
 
-  const addMember = () => setMembers(m => [...m, { name: "", email: "", phone: "", designation: "" }]);
-  const removeMember = (i) => setMembers(m => m.filter((_, j) => j !== i));
-  const setMember = (i, k, v) => setMembers(m => m.map((r, j) => j === i ? { ...r, [k]: v } : r));
+    const addMember = () => setMembers(m => [...m, { name: "", email: "", phone: "", designation: "" }]);
+    const removeMember = (i) => setMembers(m => m.filter((_, j) => j !== i));
+    const setMember = (i, k, v) => setMembers(m => m.map((r, j) => j === i ? { ...r, [k]: v } : r));
 
-  const validate = () => {
-    if (isGroup) {
-      if (!org.trim()) return "Organisation is required.";
-      for (let i = 0; i < members.length; i++) {
-        const m = members[i];
-        if (!m.name.trim()) return `Member ${i + 1}: Name is required.`;
-        if (!m.email.trim()) return `Member ${i + 1}: Email is required.`;
-        if (!m.phone.trim()) return `Member ${i + 1}: Phone is required.`;
-        if (!m.designation.trim()) return `Member ${i + 1}: Designation is required.`;
-      }
-    } else {
-      if (!form.name.trim()) return "Name is required.";
-      if (!form.email.trim()) return "Email is required.";
-      if (!form.phone.trim()) return "Phone is required.";
-      if (!form.organization.trim()) return "Organisation is required.";
-      if (!form.designation.trim()) return "Designation is required.";
-    }
-    if (!payment.mode) return "Mode of Payment is required.";
-    return "";
-  };
+    const validate = () => {
+        if (isGroup) {
+            if (!org.trim()) return "Organisation is required.";
+            for (let i = 0; i < members.length; i++) {
+                const m = members[i];
+                if (!m.name.trim()) return `Member ${i + 1}: Name is required.`;
+                if (!m.email.trim()) return `Member ${i + 1}: Email is required.`;
+                if (!m.phone.trim()) return `Member ${i + 1}: Phone is required.`;
+                if (!m.designation.trim()) return `Member ${i + 1}: Designation is required.`;
+            }
+        } else {
+            if (!form.name.trim()) return "Name is required.";
+            if (!form.email.trim()) return "Email is required.";
+            if (!form.phone.trim()) return "Phone is required.";
+            if (!form.organization.trim()) return "Organisation is required.";
+            if (!form.designation.trim()) return "Designation is required.";
+        }
+        if (!payment.mode) return "Mode of Payment is required.";
+        return "";
+    };
 
-  const submit = async () => {
-    const e = validate();
-    if (e) { setErr(e); return; }
-    setErr(""); setLoading(true);
-    let body;
-    if (isGroup) {
-      body = {
-        is_group: true,
-        group_member_count: members.length,
-        group_organization: org,
-        group_members: members.map(m => ({ ...m, organization: org })),
-        payment_mode: payment.mode,
-        payment_status: payment.status,
-        amount_paid: payment.amount,
-      };
-    } else {
-      body = {
-        is_group: false, ...form,
-        payment_mode: payment.mode,
-        payment_status: payment.status,
-        amount_paid: payment.amount,
-      };
-    }
-    const r = await api("/api/walk-ins", { method: "POST", body: JSON.stringify(body) });
-    setLoading(false);
-    if (r) {
-      setLastAdded(Array.isArray(r) ? r[0] : r);
-      setForm({ name: "", email: "", phone: "", organization: "", designation: "" });
-      setOrg(""); setMembers([{ name: "", email: "", phone: "", designation: "" }]);
-      setIsGroup(false);
-      setPayment({ mode: "", amount: "", status: "paid" });
-      load(); onDataChange();
-    }
-  };
+    const submit = async () => {
+        const e = validate();
+        if (e) { setErr(e); return; }
+        setErr(""); setLoading(true);
+        let body;
+        if (isGroup) {
+            body = {
+                is_group: true,
+                group_member_count: members.length,
+                group_organization: org,
+                group_members: members.map(m => ({ ...m, organization: org })),
+                payment_mode: payment.mode,
+                payment_status: payment.status,
+                amount_paid: payment.amount,
+            };
+        } else {
+            body = {
+                is_group: false, ...form,
+                payment_mode: payment.mode,
+                payment_status: payment.status,
+                amount_paid: payment.amount,
+            };
+        }
+        const r = await api("/api/walk-ins", { method: "POST", body: JSON.stringify(body) });
+        setLoading(false);
+        if (r) {
+            setLastAdded(Array.isArray(r) ? r[0] : r);
+            setForm({ name: "", email: "", phone: "", organization: "", designation: "" });
+            setOrg(""); setMembers([{ name: "", email: "", phone: "", designation: "" }]);
+            setIsGroup(false);
+            setPayment({ mode: "", amount: "", status: "paid" });
+            load(); onDataChange();
+        }
+    };
 
-  const Req = () => <span className="required-star">*</span>;
+    const Req = () => <span className="required-star">*</span>;
 
-  return (
-    <div>
-      <div className="topbar">
-        <div><h2>🚶 Walk-In Registration</h2><div className="sub">{data.length} walk-ins registered today</div></div>
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 20, alignItems: "start" }}>
-        <div className="card">
-          <div className="card-title">New Walk-In</div>
-          {lastAdded && (
-            <div className="info-box-green">✅ Registered & Checked In!<br /><strong>{lastAdded.name}</strong>{" · "}{lastAdded.phone}</div>
-          )}
-          {err && <div style={{ color: "var(--red)", fontSize: 12, marginBottom: 10, padding: "8px 12px", background: "var(--red-glow)", borderRadius: 7, border: "1px solid rgba(220,38,38,.2)" }}>⚠ {err}</div>}
-          <div className="toggle-row" style={{ paddingTop: 0 }}>
-            <span className="toggle-label">👥 Group Walk-In</span>
-            <label className="toggle"><input type="checkbox" checked={isGroup} onChange={e => setIsGroup(e.target.checked)} /><span className="toggle-slider" /></label>
-            {isGroup && <span style={{ fontSize: 12, color: "var(--purple)" }}>{members.length} member{members.length !== 1 ? "s" : ""}</span>}
-          </div>
-          {isGroup ? (
-            <>
-              <div className="form-group" style={{ marginBottom: 12 }}>
-                <label>Organisation <Req /></label>
-                <input value={org} onChange={e => setOrg(e.target.value)} placeholder="Company / Organisation" />
-              </div>
-              {members.map((m, i) => (
-                <div key={i} className="member-row" style={{ marginBottom: 10 }}>
-                  <div className="member-row-header">
-                    <span className="member-num">MEMBER {String(i + 1).padStart(2, "0")}</span>
-                    {i > 0 && <button className="btn btn-ghost btn-sm" onClick={() => removeMember(i)}>✕</button>}
-                  </div>
-                  <div className="form-grid">
-                    <div className="form-group"><label>Name <Req /></label><input value={m.name} onChange={e => setMember(i, "name", e.target.value)} placeholder="Full name" /></div>
-                    <div className="form-group"><label>Designation <Req /></label><input value={m.designation} onChange={e => setMember(i, "designation", e.target.value)} placeholder="Job title" /></div>
-                    <div className="form-group"><label>Email <Req /></label><input type="email" value={m.email} onChange={e => setMember(i, "email", e.target.value)} placeholder="email@example.com" /></div>
-                    <div className="form-group"><label>Phone <Req /></label><input value={m.phone} onChange={e => setMember(i, "phone", e.target.value)} placeholder="+91 …" /></div>
-                  </div>
-                </div>
-              ))}
-              <button className="btn btn-outline" style={{ width: "100%", marginBottom: 12 }} onClick={addMember}>+ Add Member</button>
-            </>
-          ) : (
-            <div className="form-grid" style={{ marginBottom: 12 }}>
-              <div className="form-group"><label>Name <Req /></label><input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Full name" /></div>
-              <div className="form-group"><label>Email <Req /></label><input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="email@example.com" /></div>
-              <div className="form-group"><label>Phone <Req /></label><input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+91 …" /></div>
-              <div className="form-group"><label>Organisation <Req /></label><input value={form.organization} onChange={e => setForm(f => ({ ...f, organization: e.target.value }))} placeholder="Company" /></div>
-              <div className="form-group" style={{ gridColumn: "1/-1" }}><label>Designation <Req /></label><input value={form.designation} onChange={e => setForm(f => ({ ...f, designation: e.target.value }))} placeholder="Job title" /></div>
+    return (
+        <div>
+            <div className="topbar">
+                <div><h2>🚶 Walk-In Registration</h2><div className="sub">{data.length} walk-ins registered today</div></div>
             </div>
-          )}
-          {/* ── Payment Section ── */}
-          <div style={{ marginTop: 18, borderTop: "1px solid var(--border)", paddingTop: 16 }}>
-            <div style={{ fontWeight: 700, fontSize: 13, color: "var(--text)", marginBottom: 12 }}>💳 Payment Details</div>
-            <div className="form-grid">
-              <div className="form-group">
-                <label>Mode of Payment <span className="required-star">*</span></label>
-                <select value={payment.mode} onChange={e => setPayment(p => ({ ...p, mode: e.target.value }))}>
-                  <option value="">— Select —</option>
-                  <option value="cash">💵 Cash</option>
-                  <option value="online">🌐 Online (UPI / Card)</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Payment Status</label>
-                <select value={payment.status} onChange={e => setPayment(p => ({ ...p, status: e.target.value }))}>
-                  <option value="paid">✅ Paid</option>
-                  <option value="pending">⏳ Pending</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Amount Paid (₹)</label>
-                <div className="amount-input-wrap">
-                  <span className="amount-rupee">₹</span>
-                  <input
-                    type="number"
-                    min="0"
-                    className="amount-input"
-                    value={payment.amount}
-                    onChange={e => setPayment(p => ({ ...p, amount: e.target.value }))}
-                    placeholder="0"
-                  />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 20, alignItems: "start" }}>
+                <div className="card">
+                    <div className="card-title">New Walk-In</div>
+                    {lastAdded && (
+                        <div className="info-box-green">✅ Registered & Checked In!<br /><strong>{lastAdded.name}</strong>{" · "}{lastAdded.phone}</div>
+                    )}
+                    {err && <div style={{ color: "var(--red)", fontSize: 12, marginBottom: 10, padding: "8px 12px", background: "var(--red-glow)", borderRadius: 7, border: "1px solid rgba(220,38,38,.2)" }}>⚠ {err}</div>}
+                    <div className="toggle-row" style={{ paddingTop: 0 }}>
+                        <span className="toggle-label">👥 Group Walk-In</span>
+                        <label className="toggle"><input type="checkbox" checked={isGroup} onChange={e => setIsGroup(e.target.checked)} /><span className="toggle-slider" /></label>
+                        {isGroup && <span style={{ fontSize: 12, color: "var(--purple)" }}>{members.length} member{members.length !== 1 ? "s" : ""}</span>}
+                    </div>
+                    {isGroup ? (
+                        <>
+                            <div className="form-group" style={{ marginBottom: 12 }}>
+                                <label>Organisation <Req /></label>
+                                <input value={org} onChange={e => setOrg(e.target.value)} placeholder="Company / Organisation" />
+                            </div>
+                            {members.map((m, i) => (
+                                <div key={i} className="member-row" style={{ marginBottom: 10 }}>
+                                    <div className="member-row-header">
+                                        <span className="member-num">MEMBER {String(i + 1).padStart(2, "0")}</span>
+                                        {i > 0 && <button className="btn btn-ghost btn-sm" onClick={() => removeMember(i)}>✕</button>}
+                                    </div>
+                                    <div className="form-grid">
+                                        <div className="form-group"><label>Name <Req /></label><input value={m.name} onChange={e => setMember(i, "name", e.target.value)} placeholder="Full name" /></div>
+                                        <div className="form-group"><label>Designation <Req /></label><input value={m.designation} onChange={e => setMember(i, "designation", e.target.value)} placeholder="Job title" /></div>
+                                        <div className="form-group"><label>Email <Req /></label><input type="email" value={m.email} onChange={e => setMember(i, "email", e.target.value)} placeholder="email@example.com" /></div>
+                                        <div className="form-group"><label>Phone <Req /></label><input value={m.phone} onChange={e => setMember(i, "phone", e.target.value)} placeholder="+91 …" /></div>
+                                    </div>
+                                </div>
+                            ))}
+                            <button className="btn btn-outline" style={{ width: "100%", marginBottom: 12 }} onClick={addMember}>+ Add Member</button>
+                        </>
+                    ) : (
+                        <div className="form-grid" style={{ marginBottom: 12 }}>
+                            <div className="form-group"><label>Name <Req /></label><input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Full name" /></div>
+                            <div className="form-group"><label>Email <Req /></label><input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="email@example.com" /></div>
+                            <div className="form-group"><label>Phone <Req /></label><input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+91 …" /></div>
+                            <div className="form-group"><label>Organisation <Req /></label><input value={form.organization} onChange={e => setForm(f => ({ ...f, organization: e.target.value }))} placeholder="Company" /></div>
+                            <div className="form-group" style={{ gridColumn: "1/-1" }}><label>Designation <Req /></label><input value={form.designation} onChange={e => setForm(f => ({ ...f, designation: e.target.value }))} placeholder="Job title" /></div>
+                        </div>
+                    )}
+                    {/* ── Payment Section ── */}
+                    <div style={{ marginTop: 18, borderTop: "1px solid var(--border)", paddingTop: 16 }}>
+                        <div style={{ fontWeight: 700, fontSize: 13, color: "var(--text)", marginBottom: 12 }}>💳 Payment Details</div>
+                        <div className="form-grid">
+                            <div className="form-group">
+                                <label>Mode of Payment <span className="required-star">*</span></label>
+                                <select value={payment.mode} onChange={e => setPayment(p => ({ ...p, mode: e.target.value }))}>
+                                    <option value="">— Select —</option>
+                                    <option value="cash">💵 Cash</option>
+                                    <option value="online">🌐 Online (UPI / Card)</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Payment Status</label>
+                                <select value={payment.status} onChange={e => setPayment(p => ({ ...p, status: e.target.value }))}>
+                                    <option value="paid">✅ Paid</option>
+                                    <option value="pending">⏳ Pending</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>Amount Paid (₹)</label>
+                                <div className="amount-input-wrap">
+                                    <span className="amount-rupee">₹</span>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        className="amount-input"
+                                        value={payment.amount}
+                                        onChange={e => setPayment(p => ({ ...p, amount: e.target.value }))}
+                                        placeholder="0"
+                                    />
+                                </div>
+                            </div>
+                            {payment.mode === "online"}
+                        </div>
+                        {payment.mode && (
+                            <div className={`pay-summary ${payment.status === "paid" ? "pay-ok" : "pay-pending"}`} style={{ marginTop: 10 }}>
+                                <div className="pay-summary-row">
+                                    {payment.status === "paid" ? "✅ Payment recorded" : "⏳ Payment pending — collect before entry"}
+                                </div>
+                                {payment.amount && (
+                                    <div className="pay-summary-amount">
+                                        ₹ {Number(payment.amount).toLocaleString("en-IN")}
+                                        <span style={{ fontWeight: 400, fontSize: 11 }}>{" · "}{payment.mode === "cash" ? "Cash" : "Online"}</span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                    <button className="btn btn-primary" style={{ width: "100%", marginTop: 16 }} onClick={submit} disabled={loading}>
+                        {loading ? "Registering…" : `⚡ Register & Check In${isGroup ? ` (${members.length} people)` : ""}`}
+                    </button>
                 </div>
-              </div>
-              {payment.mode === "online"}
+                <div className="card" style={{ padding: 0 }}>
+                    <div style={{ padding: "16px 18px 0", fontWeight: 700, fontSize: 14, color: "var(--text)" }}>Today's Walk-Ins</div>
+                    <div className="tbl-wrap" style={{ maxHeight: 480, overflowY: "auto" }}>
+                        {data.length === 0 ? <div className="empty" style={{ padding: 32 }}><div className="ei">🚶</div><p>No walk-ins yet</p></div> :
+                            <table>
+                                <thead><tr><th>Name</th><th>Email</th><th>Org</th><th>Payment</th><th>Amount</th><th>Time</th></tr></thead>
+                                <tbody>
+                                    {[...data].reverse().map((p, idx) => (
+                                        <tr key={idx}>
+                                            <td style={{ fontWeight: 500, color: "var(--text)" }}>{p.name}</td>
+                                            <td style={{ fontSize: 12 }}>{p.email || "—"}</td>
+                                            <td style={{ fontSize: 12 }}>{p.organization || "—"}</td>
+                                            <td>
+                                                {p.payment_mode === "cash"
+                                                    ? <span className="badge b-amber">💵 Cash</span>
+                                                    : p.payment_mode === "online"
+                                                        ? <span className="badge b-purple">🌐 Online</span>
+                                                        : <span className="badge b-red">—</span>}
+                                            </td>
+                                            <td style={{ fontSize: 12, fontWeight: 600, color: "var(--green)" }}>
+                                                {p.amount_paid ? `₹ ${Number(p.amount_paid).toLocaleString("en-IN")}` : "—"}
+                                            </td>
+                                            <td style={{ fontSize: 11, fontFamily: "'DM Mono'" }}>{new Date(p.registered_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>}
+                    </div>
+                </div>
             </div>
-            {payment.mode && (
-              <div className={`pay-summary ${payment.status === "paid" ? "pay-ok" : "pay-pending"}`} style={{ marginTop: 10 }}>
-                <div className="pay-summary-row">
-                  {payment.status === "paid" ? "✅ Payment recorded" : "⏳ Payment pending — collect before entry"}
-                </div>
-                {payment.amount && (
-                  <div className="pay-summary-amount">
-                    ₹ {Number(payment.amount).toLocaleString("en-IN")}
-                    <span style={{ fontWeight: 400, fontSize: 11 }}>{" · "}{payment.mode === "cash" ? "Cash" : "Online"}</span>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-          <button className="btn btn-primary" style={{ width: "100%", marginTop: 16 }} onClick={submit} disabled={loading}>
-            {loading ? "Registering…" : `⚡ Register & Check In${isGroup ? ` (${members.length} people)` : ""}`}
-          </button>
         </div>
-        <div className="card" style={{ padding: 0 }}>
-          <div style={{ padding: "16px 18px 0", fontWeight: 700, fontSize: 14, color: "var(--text)" }}>Today's Walk-Ins</div>
-          <div className="tbl-wrap" style={{ maxHeight: 480, overflowY: "auto" }}>
-            {data.length === 0 ? <div className="empty" style={{ padding: 32 }}><div className="ei">🚶</div><p>No walk-ins yet</p></div> :
-              <table>
-                <thead><tr><th>Name</th><th>Email</th><th>Org</th><th>Payment</th><th>Amount</th><th>Time</th></tr></thead>
-                <tbody>
-                  {[...data].reverse().map((p, idx) => (
-                    <tr key={idx}>
-                      <td style={{ fontWeight: 500, color: "var(--text)" }}>{p.name}</td>
-                      <td style={{ fontSize: 12 }}>{p.email || "—"}</td>
-                      <td style={{ fontSize: 12 }}>{p.organization || "—"}</td>
-                      <td>
-                        {p.payment_mode === "cash"
-                          ? <span className="badge b-amber">💵 Cash</span>
-                          : p.payment_mode === "online"
-                            ? <span className="badge b-purple">🌐 Online</span>
-                            : <span className="badge b-red">—</span>}
-                      </td>
-                      <td style={{ fontSize: 12, fontWeight: 600, color: "var(--green)" }}>
-                        {p.amount_paid ? `₹ ${Number(p.amount_paid).toLocaleString("en-IN")}` : "—"}
-                      </td>
-                      <td style={{ fontSize: 11, fontFamily: "'DM Mono'" }}>{new Date(p.registered_at).toLocaleString("en-IN", {timeZone: "Asia/Kolkata"})}{new Date().toISOString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 // ── ATTENDANCE ────────────────────────────────────────────────────────────────
 function Attendance({ onDataChange }) {
-  const [data, setData] = useState([]);
-  const [filter, setFilter] = useState("all");
-  const [search, setSearch] = useState("");
+    const [data, setData] = useState([]);
+    const [filter, setFilter] = useState("all");
+    const [search, setSearch] = useState("");
 
-  const load = async () => {
-    const [pre, win] = await Promise.all([api("/api/pre-registered"), api("/api/walk-ins")]);
-    setData([...(pre || []), ...(win || [])]);
-  };
-  useEffect(() => {
-  load();
-  const channel = sb.channel("attendance-live")
-    .on("postgres_changes", { event: "*", schema: "public", table: "attendees" },
-      () => load()
-    )
-    .subscribe();
-  return () => sb.removeChannel(channel);
-}, []);
+    const load = async () => {
+        const [pre, win] = await Promise.all([api("/api/pre-registered"), api("/api/walk-ins")]);
+        setData([...(pre || []), ...(win || [])]);
+    };
+    useEffect(() => {
+        load();
+        const channel = sb.channel("attendance-live")
+            .on("postgres_changes", { event: "*", schema: "public", table: "attendees" },
+                () => load()
+            )
+            .subscribe();
+        return () => sb.removeChannel(channel);
+    }, []);
 
-  const toggle = async (p) => {
-    const ep = p.type === "walk-in" ? "walk-ins" : "pre-registered";
-    const key = p.phone;
-    const r = await api(`/api/${ep}/${encodeURIComponent(key)}`, { method: "PATCH" });
-    if (r) {
-      await load();
-      onDataChange();
-    }
-  };
+    const toggle = async (p) => {
+        const ep = p.type === "walk-in" ? "walk-ins" : "pre-registered";
+        const key = p.phone;
+        const r = await api(`/api/${ep}/${encodeURIComponent(key)}`, { method: "PATCH" });
+        if (r) {
+            await load();
+            onDataChange();
+        }
+    };
 
-  const present = data.filter(p => p.checked_in).length;
-  const filtered = data.filter(p => {
-    const matchFilter = filter === "all" || (filter === "present" && p.checked_in) || (filter === "pending" && !p.checked_in);
-    const matchSearch = !search || [p.name, p.organization || "", p.email || "", p.phone || "", p.designation || ""].some(v => String(v || "").toLowerCase().includes(String(search || "").toLowerCase()));
-    return matchFilter && matchSearch;
-  });
+    const present = data.filter(p => p.checked_in).length;
+    const filtered = data.filter(p => {
+        const matchFilter = filter === "all" || (filter === "present" && p.checked_in) || (filter === "pending" && !p.checked_in);
+        const matchSearch = !search || [p.name, p.organization || "", p.email || "", p.phone || "", p.designation || ""].some(v => String(v || "").toLowerCase().includes(String(search || "").toLowerCase()));
+        return matchFilter && matchSearch;
+    });
 
-  return (
-    <div>
-      <div className="topbar">
-        <div><h2>✅ Attendance</h2><div className="sub">{present}/{data.length} checked in · {data.length - present} pending</div></div>
-      </div>
-      <div className="stat-grid" style={{ gridTemplateColumns: "repeat(3,1fr)" }}>
-        <div className="stat-card"><div className="s-icon">👥</div><div className="label">Total</div><div className="value v-purple">{data.length}</div></div>
-        <div className="stat-card"><div className="s-icon">✅</div><div className="label">Present</div><div className="value v-green">{present}</div></div>
-        <div className="stat-card"><div className="s-icon">⏳</div><div className="label">Pending</div><div className="value v-red">{data.length - present}</div></div>
-      </div>
-      <div className="search-row">
-        <input className="search-input" placeholder="Search by name, org, email, phone, designation…"
-          value={search} onChange={e => setSearch(e.target.value)} />
-      </div>
-      <div className="filter-tabs">
-        {["all", "present", "pending"].map(f => (
-          <button key={f} className={`ftab ${filter === f ? "active" : ""}`} onClick={() => setFilter(f)}>
-            {f === "all" ? "All" : f === "present" ? "✅ Present" : "⏳ Pending"}
-          </button>
-        ))}
-      </div>
-      <div className="card" style={{ padding: 0 }}>
-        <div className="tbl-wrap">
-          {filtered.length === 0 ? <div className="empty"><div className="ei">✅</div><p>No attendees match</p></div> :
-            <table>
-              <thead><tr><th>Name</th><th>Email</th><th>Org</th><th>Phone</th><th>Designation</th><th>Group</th><th>Type</th><th>Status</th><th>Check-in Time</th><th>Action</th></tr></thead>
-              <tbody>
-                {filtered.map((p, idx) => (
-                  <tr key={idx}>
-                    <td>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                        <div className="avatar" style={{ width: 26, height: 26, fontSize: 10, background: avatarColor(p.name) }}>{initials(p.name)}</div>
-                        <span style={{ fontWeight: 500, color: "var(--text)" }}>{p.name}</span>
-                      </div>
-                    </td>
-                    <td style={{ fontSize: 12 }}>{p.email || "—"}</td>
-                    <td style={{ fontSize: 12 }}>{p.organization || "—"}</td>
-                    <td style={{ fontSize: 12 }}>{p.phone || "—"}</td>
-                    <td style={{ fontSize: 12 }}>{p.designation || "—"}</td>
-                    <td style={{ fontSize: 12 }}>
-                      {p.is_group
-                        ? <span className="badge b-purple">👥 {p.group_member_count || ""} members</span>
-                        : <span className="badge b-amber">👤 Solo</span>}
-                    </td>
-                    <td><span className={`badge ${p.type === "walk-in" ? "b-amber" : "b-purple"}`}>{p.type}</span></td>
-                    <td>{p.checked_in ? <span className="badge b-green">✅ Present</span> : <span className="badge b-red">⏳ Pending</span>}</td>
-                    <td style={{ fontSize: 11, fontFamily: "'DM Mono'" }}>{new Date(p.checked_in_time).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}{new Date().toISOString()}</td>
-                    <td>
-                      <button className={`btn btn-sm ${p.checked_in ? "btn-outline" : "btn-green"}`} onClick={() => toggle(p)}>
-                        {p.checked_in ? "Undo" : "Check In"}
-                      </button>
-                    </td>
-                  </tr>
+    return (
+        <div>
+            <div className="topbar">
+                <div><h2>✅ Attendance</h2><div className="sub">{present}/{data.length} checked in · {data.length - present} pending</div></div>
+            </div>
+            <div className="stat-grid" style={{ gridTemplateColumns: "repeat(3,1fr)" }}>
+                <div className="stat-card"><div className="s-icon">👥</div><div className="label">Total</div><div className="value v-purple">{data.length}</div></div>
+                <div className="stat-card"><div className="s-icon">✅</div><div className="label">Present</div><div className="value v-green">{present}</div></div>
+                <div className="stat-card"><div className="s-icon">⏳</div><div className="label">Pending</div><div className="value v-red">{data.length - present}</div></div>
+            </div>
+            <div className="search-row">
+                <input className="search-input" placeholder="Search by name, org, email, phone, designation…"
+                    value={search} onChange={e => setSearch(e.target.value)} />
+            </div>
+            <div className="filter-tabs">
+                {["all", "present", "pending"].map(f => (
+                    <button key={f} className={`ftab ${filter === f ? "active" : ""}`} onClick={() => setFilter(f)}>
+                        {f === "all" ? "All" : f === "present" ? "✅ Present" : "⏳ Pending"}
+                    </button>
                 ))}
-              </tbody>
-            </table>}
+            </div>
+            <div className="card" style={{ padding: 0 }}>
+                <div className="tbl-wrap">
+                    {filtered.length === 0 ? <div className="empty"><div className="ei">✅</div><p>No attendees match</p></div> :
+                        <table>
+                            <thead><tr><th>Name</th><th>Email</th><th>Org</th><th>Phone</th><th>Designation</th><th>Group</th><th>Type</th><th>Status</th><th>Check-in Time</th><th>Action</th></tr></thead>
+                            <tbody>
+                                {filtered.map((p, idx) => (
+                                    <tr key={idx}>
+                                        <td>
+                                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                                <div className="avatar" style={{ width: 26, height: 26, fontSize: 10, background: avatarColor(p.name) }}>{initials(p.name)}</div>
+                                                <span style={{ fontWeight: 500, color: "var(--text)" }}>{p.name}</span>
+                                            </div>
+                                        </td>
+                                        <td style={{ fontSize: 12 }}>{p.email || "—"}</td>
+                                        <td style={{ fontSize: 12 }}>{p.organization || "—"}</td>
+                                        <td style={{ fontSize: 12 }}>{p.phone || "—"}</td>
+                                        <td style={{ fontSize: 12 }}>{p.designation || "—"}</td>
+                                        <td style={{ fontSize: 12 }}>
+                                            {p.is_group
+                                                ? <span className="badge b-purple">👥 {p.group_member_count || ""} members</span>
+                                                : <span className="badge b-amber">👤 Solo</span>}
+                                        </td>
+                                        <td><span className={`badge ${p.type === "walk-in" ? "b-amber" : "b-purple"}`}>{p.type}</span></td>
+                                        <td>{p.checked_in ? <span className="badge b-green">✅ Present</span> : <span className="badge b-red">⏳ Pending</span>}</td>
+                                        <td style={{ fontSize: 11, fontFamily: "'DM Mono'" }}>{new Date(p.checked_in_time).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</td>
+                                        <td>
+                                            <button className={`btn btn-sm ${p.checked_in ? "btn-outline" : "btn-green"}`} onClick={() => toggle(p)}>
+                                                {p.checked_in ? "Undo" : "Check In"}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>}
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }
 
 // ── SPEAKERS ──────────────────────────────────────────────────────────────────
 function Speakers({ onDataChange }) {
-  const [data, setData] = useState([]);
-  const [modal, setModal] = useState(false);
-  const [form, setForm] = useState({ name: "", organization: "", topic: "", session_time: "", bio: "" });
-  const [err, setErr] = useState("");
-  const [spkSearch, setSpkSearch] = useState("");
+    const [data, setData] = useState([]);
+    const [modal, setModal] = useState(false);
+    const [form, setForm] = useState({ name: "", organization: "", topic: "", session_time: "", bio: "" });
+    const [err, setErr] = useState("");
+    const [spkSearch, setSpkSearch] = useState("");
 
-  const load = async () => { const r = await api("/api/speakers"); if (r) setData(r); };
-  useEffect(() => {
-  load();
-  const channel = sb.channel("speakers-live")
-    .on("postgres_changes", { event: "*", schema: "public", table: "speakers" },
-      () => load()
-    )
-    .subscribe();
-  return () => sb.removeChannel(channel);
-}, []);
+    const load = async () => { const r = await api("/api/speakers"); if (r) setData(r); };
+    useEffect(() => {
+        load();
+        const channel = sb.channel("speakers-live")
+            .on("postgres_changes", { event: "*", schema: "public", table: "speakers" },
+                () => load()
+            )
+            .subscribe();
+        return () => sb.removeChannel(channel);
+    }, []);
 
-  const validate = () => {
-    if (!form.name.trim()) return "Name is required.";
-    if (!form.organization.trim()) return "Organisation is required.";
-    if (!form.topic.trim()) return "Talk topic is required.";
-    if (!form.session_time.trim()) return "Session time is required.";
-    return "";
-  };
+    const validate = () => {
+        if (!form.name.trim()) return "Name is required.";
+        if (!form.organization.trim()) return "Organisation is required.";
+        if (!form.topic.trim()) return "Talk topic is required.";
+        if (!form.session_time.trim()) return "Session time is required.";
+        return "";
+    };
 
-  const submit = async () => {
-    const e = validate();
-    if (e) { setErr(e); return; }
-    setErr("");
-    const r = await api("/api/speakers", { method: "POST", body: JSON.stringify(form) });
-    if (r) {
-      setModal(false);
-      setForm({ name: "", organization: "", topic: "", session_time: "", bio: "" });
-      load(); onDataChange();
-    }
-  };
+    const submit = async () => {
+        const e = validate();
+        if (e) { setErr(e); return; }
+        setErr("");
+        const r = await api("/api/speakers", { method: "POST", body: JSON.stringify(form) });
+        if (r) {
+            setModal(false);
+            setForm({ name: "", organization: "", topic: "", session_time: "", bio: "" });
+            load(); onDataChange();
+        }
+    };
 
-  const del = async (s) => {
-    if (!confirm("Remove speaker?")) return;
-    await api(`/api/speakers/${encodeURIComponent(s.name)}`, { method: "DELETE" });
-    setData(d => d.filter(x => x.name !== s.name));
-    onDataChange();
-  };
+    const del = async (s) => {
+        if (!confirm("Remove speaker?")) return;
+        await api(`/api/speakers/${encodeURIComponent(s.name)}`, { method: "DELETE" });
+        setData(d => d.filter(x => x.name !== s.name));
+        onDataChange();
+    };
 
-  const toggleCheckIn = async (s) => {
-  const r = await api(
-    `/api/speakers/${encodeURIComponent(s.name)}/checkin`,
-    { method: "PATCH" }
-  );
+    const toggleCheckIn = async (s) => {
+        const r = await api(
+            `/api/speakers/${encodeURIComponent(s.name)}/checkin`,
+            { method: "PATCH" }
+        );
 
-  if (r) {
-    await load();      // reload speakers from backend
-    onDataChange();
-  }
-};
+        if (r) {
+            await load();      // reload speakers from backend
+            onDataChange();
+        }
+    };
 
-  const present = data.filter(s => s.checked_in).length;
+    const present = data.filter(s => s.checked_in).length;
 
-  const filtered = data.filter(s =>
-    !spkSearch.trim() ||
-    s.name.toLowerCase().includes(spkSearch.toLowerCase()) ||
-    (s.organization || "").toLowerCase().includes(spkSearch.toLowerCase()) ||
-    (s.topic || "").toLowerCase().includes(spkSearch.toLowerCase())
-  );
+    const filtered = data.filter(s =>
+        !spkSearch.trim() ||
+        s.name.toLowerCase().includes(spkSearch.toLowerCase()) ||
+        (s.organization || "").toLowerCase().includes(spkSearch.toLowerCase()) ||
+        (s.topic || "").toLowerCase().includes(spkSearch.toLowerCase())
+    );
 
-  const Req = () => <span className="required-star">*</span>;
+    const Req = () => <span className="required-star">*</span>;
 
-  return (
-    <div>
-      <div className="topbar">
+    return (
         <div>
-          <h2>🎤 Speakers</h2>
-          <div className="sub">{data.length} speakers · {present} checked in · {data.length - present} pending</div>
-        </div>
-        <button className="btn btn-primary" onClick={() => setModal(true)}>+ Add Speaker</button>
-      </div>
-
-      <div className="stat-grid" style={{ gridTemplateColumns: "repeat(3,1fr)", marginBottom: 20 }}>
-        <div className="stat-card"><div className="s-icon">🎤</div><div className="label">Total Speakers</div><div className="value v-purple">{data.length}</div></div>
-        <div className="stat-card"><div className="s-icon">✅</div><div className="label">Present</div><div className="value v-green">{present}</div></div>
-        <div className="stat-card"><div className="s-icon">⏳</div><div className="label">Pending</div><div className="value v-red">{data.length - present}</div></div>
-      </div>
-
-        <div className="search-row" style={{ marginBottom: 16 }}>
-          <input
-        className="search-input"
-        placeholder="Search by name, organisation, or topic…"
-        value={spkSearch}
-        onChange={e => setSpkSearch(e.target.value)}
-      />
-      {spkSearch && <button className="btn btn-outline" onClick={() => setSpkSearch("")}>Clear</button>}
-      <span style={{ fontSize: 12, color: "var(--text3)", whiteSpace: "nowrap" }}>
-        {filtered.length} / {data.length} shown
-      </span>
-    </div>
-
-      {filtered.length === 0 ? <div className="empty"><div className="ei">🎤</div><p>No speakers added yet</p></div> :
-        <div className="spk-grid">
-          {filtered.map((s, idx) => (
-            <div key={idx} className="spk-card">
-              <div className="spk-head">
-                <div className="avatar" style={{ background: avatarColor(s.name), width: 44, height: 44, fontSize: 16 }}>{initials(s.name)}</div>
-                <div className="spk-info" style={{ flex: 1 }}>
-                  <h4>{s.name}</h4>
-                  <p style={{ color: "var(--text3)" }}>{s.organization}</p>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
-                  <button className="btn btn-sm btn-red" onClick={() => del(s)}>✕</button>
-                </div>
-              </div>
-              <div className="spk-tag">🎯 {s.topic}</div>
-              <div style={{ fontSize: 12, color: "var(--purple)", marginBottom: 6 }}>🕐 {s.session_time}</div>
-              {s.bio && <div className="spk-bio">{s.bio}</div>}
-              <div className="spk-checkin">
+            <div className="topbar">
                 <div>
-                  {s.checked_in
-                    ? <span className="badge b-green">✅ Present · {new Date(s.checked_in_time).toLocaleString("en-IN", {timeZone: "Asia/Kolkata"})}{new Date().toISOString()}</span>
-                    : <span className="badge b-red">⏳ Not Checked In</span>}
+                    <h2>🎤 Speakers</h2>
+                    <div className="sub">{data.length} speakers · {present} checked in · {data.length - present} pending</div>
                 </div>
-                <button className={`btn btn-sm ${s.checked_in ? "btn-outline" : "btn-green"}`} onClick={() => toggleCheckIn(s)}>
-                  {s.checked_in ? "Undo" : "Check In"}
-                </button>
-              </div>
+                <button className="btn btn-primary" onClick={() => setModal(true)}>+ Add Speaker</button>
             </div>
-          ))}
-        </div>}
 
-      {modal && (
-        <div className="modal-bg" onClick={e => e.target === e.currentTarget && setModal(false)}>
-          <div className="modal">
-            <div className="modal-header"><h3>🎤 Add Speaker</h3><button className="modal-close" onClick={() => setModal(false)}>✕</button></div>
-            {err && <div style={{ color: "var(--red)", fontSize: 12, marginBottom: 14, padding: "8px 12px", background: "var(--red-glow)", borderRadius: 7, border: "1px solid rgba(220,38,38,.2)" }}>⚠ {err}</div>}
-            <div className="form-grid">
-              {[["name", "Name"], ["organization", "Organisation"], ["topic", "Talk Topic"], ["session_time", "Session Time"]].map(([k, l]) => (
-                <div key={k} className="form-group"><label>{l} <Req /></label>
-                  <input value={form[k]} onChange={e => setForm(f => ({ ...f, [k]: e.target.value }))} placeholder={l} />
+            <div className="stat-grid" style={{ gridTemplateColumns: "repeat(3,1fr)", marginBottom: 20 }}>
+                <div className="stat-card"><div className="s-icon">🎤</div><div className="label">Total Speakers</div><div className="value v-purple">{data.length}</div></div>
+                <div className="stat-card"><div className="s-icon">✅</div><div className="label">Present</div><div className="value v-green">{present}</div></div>
+                <div className="stat-card"><div className="s-icon">⏳</div><div className="label">Pending</div><div className="value v-red">{data.length - present}</div></div>
+            </div>
+
+            <div className="search-row" style={{ marginBottom: 16 }}>
+                <input
+                    className="search-input"
+                    placeholder="Search by name, organisation, or topic…"
+                    value={spkSearch}
+                    onChange={e => setSpkSearch(e.target.value)}
+                />
+                {spkSearch && <button className="btn btn-outline" onClick={() => setSpkSearch("")}>Clear</button>}
+                <span style={{ fontSize: 12, color: "var(--text3)", whiteSpace: "nowrap" }}>
+                    {filtered.length} / {data.length} shown
+                </span>
+            </div>
+
+            {filtered.length === 0 ? <div className="empty"><div className="ei">🎤</div><p>No speakers added yet</p></div> :
+                <div className="spk-grid">
+                    {filtered.map((s, idx) => (
+                        <div key={idx} className="spk-card">
+                            <div className="spk-head">
+                                <div className="avatar" style={{ background: avatarColor(s.name), width: 44, height: 44, fontSize: 16 }}>{initials(s.name)}</div>
+                                <div className="spk-info" style={{ flex: 1 }}>
+                                    <h4>{s.name}</h4>
+                                    <p style={{ color: "var(--text3)" }}>{s.organization}</p>
+                                </div>
+                                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6 }}>
+                                    <button className="btn btn-sm btn-red" onClick={() => del(s)}>✕</button>
+                                </div>
+                            </div>
+                            <div className="spk-tag">🎯 {s.topic}</div>
+                            <div style={{ fontSize: 12, color: "var(--purple)", marginBottom: 6 }}>🕐 {s.session_time}</div>
+                            {s.bio && <div className="spk-bio">{s.bio}</div>}
+                            <div className="spk-checkin">
+                                <div>
+                                    {s.checked_in
+                                        ? <span className="badge b-green">✅ Present · {new Date(s.checked_in_time).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</span>
+                                        : <span className="badge b-red">⏳ Not Checked In</span>}
+                                </div>
+                                <button className={`btn btn-sm ${s.checked_in ? "btn-outline" : "btn-green"}`} onClick={() => toggleCheckIn(s)}>
+                                    {s.checked_in ? "Undo" : "Check In"}
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>}
+
+            {modal && (
+                <div className="modal-bg" onClick={e => e.target === e.currentTarget && setModal(false)}>
+                    <div className="modal">
+                        <div className="modal-header"><h3>🎤 Add Speaker</h3><button className="modal-close" onClick={() => setModal(false)}>✕</button></div>
+                        {err && <div style={{ color: "var(--red)", fontSize: 12, marginBottom: 14, padding: "8px 12px", background: "var(--red-glow)", borderRadius: 7, border: "1px solid rgba(220,38,38,.2)" }}>⚠ {err}</div>}
+                        <div className="form-grid">
+                            {[["name", "Name"], ["organization", "Organisation"], ["topic", "Talk Topic"], ["session_time", "Session Time"]].map(([k, l]) => (
+                                <div key={k} className="form-group"><label>{l} <Req /></label>
+                                    <input value={form[k]} onChange={e => setForm(f => ({ ...f, [k]: e.target.value }))} placeholder={l} />
+                                </div>
+                            ))}
+                            <div className="form-group" style={{ gridColumn: "1/-1" }}><label>Bio</label>
+                                <textarea value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} placeholder="Short bio…" />
+                            </div>
+                        </div>
+                        <div className="form-actions">
+                            <button className="btn btn-outline" onClick={() => setModal(false)}>Cancel</button>
+                            <button className="btn btn-primary" onClick={submit}>Add Speaker</button>
+                        </div>
+                    </div>
                 </div>
-              ))}
-              <div className="form-group" style={{ gridColumn: "1/-1" }}><label>Bio</label>
-                <textarea value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} placeholder="Short bio…" />
-              </div>
-            </div>
-            <div className="form-actions">
-              <button className="btn btn-outline" onClick={() => setModal(false)}>Cancel</button>
-              <button className="btn btn-primary" onClick={submit}>Add Speaker</button>
-            </div>
-          </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 }
 
 // ── EXCEL EXPORT ──────────────────────────────────────────────────────────────
 function ExcelExport() {
-  const exports = [
-    { type: "all", icon: "📊", label: "Full Export", sub: "All sheets in one file" },
-    { type: "attendees", icon: "👥", label: "All Attendees", sub: "Pre-reg + Walk-ins combined" },
-    { type: "preregistered", icon: "📋", label: "Pre-Registered", sub: "Pre-registered attendees" },
-    { type: "walkins", icon: "🚶", label: "Walk-Ins", sub: "On-spot registrations" },
-    { type: "attendance", icon: "✅", label: "Attendance Sheet", sub: "Check-in status + time" },
-    { type: "speakers", icon: "🎤", label: "Speakers", sub: "Speaker profiles & sessions" },
-  ];
-  return (
-    <div>
-      <div className="topbar"><div><h2>⬇ Excel Export</h2><div className="sub">Download data as formatted .xlsx files</div></div></div>
-      <div className="info-box" style={{ marginBottom: 22 }}>
-        Files are named <strong>CSR_Summit_[type]_[datetime].xlsx</strong> and include all fields with timestamps.
-      </div>
-      <div className="export-grid">
-        {exports.map(e => (
-          <div key={e.type} className="export-card" onClick={() => window.open(`${API}/api/export/excel?type=${e.type}`)}>
-            <div className="export-icon">{e.icon}</div>
-            <div className="export-label">{e.label}</div>
-            <div className="export-sub">{e.sub}</div>
-            <button className="btn btn-outline btn-sm" style={{ pointerEvents: "none" }}>⬇ Download .xlsx</button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+    const exports = [
+        { type: "all", icon: "📊", label: "Full Export", sub: "All sheets in one file" },
+        { type: "attendees", icon: "👥", label: "All Attendees", sub: "Pre-reg + Walk-ins combined" },
+        { type: "preregistered", icon: "📋", label: "Pre-Registered", sub: "Pre-registered attendees" },
+        { type: "walkins", icon: "🚶", label: "Walk-Ins", sub: "On-spot registrations" },
+        { type: "attendance", icon: "✅", label: "Attendance Sheet", sub: "Check-in status + time" },
+        { type: "speakers", icon: "🎤", label: "Speakers", sub: "Speaker profiles & sessions" },
+    ];
+    return (
+        <div>
+            <div className="topbar"><div><h2>⬇ Excel Export</h2><div className="sub">Download data as formatted .xlsx files</div></div></div>
+            <div className="info-box" style={{ marginBottom: 22 }}>
+                Files are named <strong>CSR_Summit_[type]_[datetime].xlsx</strong> and include all fields with timestamps.
+            </div>
+            <div className="export-grid">
+                {exports.map(e => (
+                    <div key={e.type} className="export-card" onClick={() => window.open(`${API}/api/export/excel?type=${e.type}`)}>
+                        <div className="export-icon">{e.icon}</div>
+                        <div className="export-label">{e.label}</div>
+                        <div className="export-sub">{e.sub}</div>
+                        <button className="btn btn-outline btn-sm" style={{ pointerEvents: "none" }}>⬇ Download .xlsx</button>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 }
 
 // ── APP SHELL ─────────────────────────────────────────────────────────────────
 const TABS = [
-  { id: "dash", icon: "🏠", label: "Dashboard" },
-  { id: "search", icon: "🔍", label: "Attendee Search" },
-  { id: "pre", icon: "📋", label: "Pre-Registration" },
-  { id: "walkin", icon: "🚶", label: "Walk-In" },
-  { id: "attendance", icon: "✅", label: "Attendance" },
-  { id: "speakers", icon: "🎤", label: "Speakers" },
-  { id: "export", icon: "⬇", label: "Excel Export" },
+    { id: "dash", icon: "🏠", label: "Dashboard" },
+    { id: "search", icon: "🔍", label: "Attendee Search" },
+    { id: "pre", icon: "📋", label: "Pre-Registration" },
+    { id: "walkin", icon: "🚶", label: "Walk-In" },
+    { id: "attendance", icon: "✅", label: "Attendance" },
+    { id: "speakers", icon: "🎤", label: "Speakers" },
+    { id: "export", icon: "⬇", label: "Excel Export" },
 ];
 
 function App() {
-  const [tab, setTab] = useState("dash");
-  const [stats, setStats] = useState({});
-  const [online, setOnline] = useState(null);
+    const [tab, setTab] = useState("dash");
+    const [stats, setStats] = useState({});
+    const [online, setOnline] = useState(null);
 
-  const loadStats = useCallback(async () => {
-    const r = await api("/api/stats");
-    if (r) { setStats(r); setOnline(true); } else setOnline(false);
-  }, []);
+    const loadStats = useCallback(async () => {
+        const r = await api("/api/stats");
+        if (r) { setStats(r); setOnline(true); } else setOnline(false);
+    }, []);
 
-  useEffect(() => { loadStats(); }, []);
+    useEffect(() => { loadStats(); }, []);
 
-  return (
-    <div className="shell">
-      <aside className="sidebar">
-        <div className="sidebar-logo">
-          <img src={LOGO_SRC} alt="Univate Logo" onError={e => { e.target.style.display = 'none'; }} />
-          <p>CSR SUMMIT 2026 · CRM</p>
+    return (
+        <div className="shell">
+            <aside className="sidebar">
+                <div className="sidebar-logo">
+                    <img src={LOGO_SRC} alt="Univate Logo" onError={e => { e.target.style.display = 'none'; }} />
+                    <p>CSR SUMMIT 2026 · CRM</p>
+                </div>
+                <div className="sidebar-status">
+                    <div className={`status-dot ${online === null ? "" : online ? "ok" : "err"}`} />
+                    <span className="status-text">
+                        {online === null ? "Connecting…" : online ? "Backend connected" : "Backend offline"}
+                    </span>
+                </div>
+                <nav className="sidebar-nav">
+                    <div className="nav-section">Navigation</div>
+                    {TABS.map(t => (
+                        <button key={t.id} className={`nav-btn ${tab === t.id ? "active" : ""}`} onClick={() => setTab(t.id)}>
+                            <span className="icon">{t.icon}</span>
+                            <span>{t.label}</span>
+                            {t.id === "pre" && stats.pre_registered > 0 && <span className="nbadge">{stats.pre_registered}</span>}
+                            {t.id === "walkin" && stats.walk_ins > 0 && <span className="nbadge">{stats.walk_ins}</span>}
+                            {t.id === "attendance" && stats.pending > 0 && <span className="nbadge">{stats.pending}</span>}
+                        </button>
+                    ))}
+                </nav>
+                <div className="sidebar-foot">events@unnatva.org</div>
+            </aside>
+            <main className="main">
+                {tab === "dash" && <Dashboard stats={stats} setTab={setTab} />}
+                {tab === "search" && <AttendeeSearch />}
+                {tab === "pre" && <PreRegistration onDataChange={loadStats} />}
+                {tab === "walkin" && <WalkIn onDataChange={loadStats} />}
+                {tab === "attendance" && <Attendance onDataChange={loadStats} />}
+                {tab === "speakers" && <Speakers onDataChange={loadStats} />}
+                {tab === "export" && <ExcelExport />}
+            </main>
         </div>
-        <div className="sidebar-status">
-          <div className={`status-dot ${online === null ? "" : online ? "ok" : "err"}`} />
-          <span className="status-text">
-            {online === null ? "Connecting…" : online ? "Backend connected" : "Backend offline"}
-          </span>
-        </div>
-        <nav className="sidebar-nav">
-          <div className="nav-section">Navigation</div>
-          {TABS.map(t => (
-            <button key={t.id} className={`nav-btn ${tab === t.id ? "active" : ""}`} onClick={() => setTab(t.id)}>
-              <span className="icon">{t.icon}</span>
-              <span>{t.label}</span>
-              {t.id === "pre" && stats.pre_registered > 0 && <span className="nbadge">{stats.pre_registered}</span>}
-              {t.id === "walkin" && stats.walk_ins > 0 && <span className="nbadge">{stats.walk_ins}</span>}
-              {t.id === "attendance" && stats.pending > 0 && <span className="nbadge">{stats.pending}</span>}
-            </button>
-          ))}
-        </nav>
-        <div className="sidebar-foot">events@unnatva.org</div>
-      </aside>
-      <main className="main">
-        {tab === "dash" && <Dashboard stats={stats} setTab={setTab} />}
-        {tab === "search" && <AttendeeSearch />}
-        {tab === "pre" && <PreRegistration onDataChange={loadStats} />}
-        {tab === "walkin" && <WalkIn onDataChange={loadStats} />}
-        {tab === "attendance" && <Attendance onDataChange={loadStats} />}
-        {tab === "speakers" && <Speakers onDataChange={loadStats} />}
-        {tab === "export" && <ExcelExport />}
-      </main>
-    </div>
-  );
+    );
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
