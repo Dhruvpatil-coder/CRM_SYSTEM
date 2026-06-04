@@ -28,8 +28,6 @@ def attendee_sheet(ws, records):
     hdr(
         ws,
         [
-            "ID",
-            "Group ID",
             "Name",
             "Email",
             "Phone",
@@ -45,8 +43,6 @@ def attendee_sheet(ws, records):
     for r in records:
         ws.append(
             [
-                r.get("id"),
-                r.get("group_id") or "",
                 r.get("name"),
                 r.get("email"),
                 r.get("phone"),
@@ -113,7 +109,7 @@ def export(type: str = "all"):
         hdr(
             ws,
             [
-                "ID",
+                "Phone",
                 "Name",
                 "Organization",
                 "Designation",
@@ -126,7 +122,7 @@ def export(type: str = "all"):
         for r in attendees:
             ws.append(
                 [
-                    r.get("id"),
+                    r.get("phone"),
                     r.get("name"),
                     r.get("organization"),
                     r.get("designation"),
@@ -145,9 +141,7 @@ def export(type: str = "all"):
         hdr(
             ws,
             [
-                "ID",
                 "Name",
-                "Designation",
                 "Organization",
                 "Topic",
                 "Session Time",
@@ -158,9 +152,7 @@ def export(type: str = "all"):
         for s in speakers:
             ws.append(
                 [
-                    s.get("id"),
                     s.get("name"),
-                    s.get("designation"),
                     s.get("organization"),
                     s.get("topic"),
                     s.get("session_time"),
