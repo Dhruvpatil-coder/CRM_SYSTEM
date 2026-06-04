@@ -357,40 +357,6 @@ tr:hover td {
   background: var(--bg3);
 }
 
-/* ID Badges */
-.id-badge {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  font-weight: 500;
-  padding: 3px 8px;
-  border-radius: 5px;
-  display: inline-block;
-}
-
-.id-pre {
-  background: rgba(124, 58, 237, .08);
-  color: var(--purple);
-  border: 1px solid rgba(124, 58, 237, .2);
-}
-
-.id-win {
-  background: rgba(217, 119, 6, .1);
-  color: var(--amber);
-  border: 1px solid rgba(217, 119, 6, .25);
-}
-
-.id-grp {
-  background: rgba(124, 58, 237, .12);
-  color: var(--purple2);
-  border: 1px solid rgba(124, 58, 237, .3);
-}
-
-.id-spk {
-  background: rgba(5, 150, 105, .1);
-  color: var(--green);
-  border: 1px solid rgba(5, 150, 105, .25);
-}
-
 /* Badges */
 .badge {
   display: inline-flex;
@@ -1096,3 +1062,22 @@ tr:hover td {
     gap: 12px;
   }
 }
+
+/* ── Amount input ─────────────────────────── */
+.amount-input-wrap { display:flex; align-items:center; background:var(--bg3); border:1px solid var(--border); border-radius:7px; overflow:hidden; }
+.amount-input-wrap:focus-within { border-color:var(--purple-light); background:#fff; }
+.amount-rupee { padding:9px 10px 9px 12px; font-size:14px; font-weight:700; color:var(--purple); background:var(--purple-soft); border-right:1px solid var(--border); flex-shrink:0; }
+.amount-input { flex:1; border:none; background:transparent; padding:9px 12px; color:var(--text); font-family:'DM Mono',monospace; font-size:14px; font-weight:600; outline:none; min-width:0; }
+.amount-input::placeholder { color:var(--text3); font-weight:400; }
+.amount-input::-webkit-inner-spin-button,.amount-input::-webkit-outer-spin-button { -webkit-appearance:none; }
+
+/* ── Pay summary ──────────────────────────── */
+.pay-summary { border-radius:8px; padding:12px 14px; }
+.pay-summary.pay-ok      { background:var(--green-glow); border:1px solid rgba(5,150,105,.25); }
+.pay-summary.pay-pending { background:var(--amber-glow); border:1px solid rgba(217,119,6,.25); }
+.pay-summary-row    { font-size:12px; color:var(--text2); margin-bottom:4px; }
+.pay-summary-amount { font-size:22px; font-weight:700; color:var(--green); font-family:'DM Mono',monospace; }
+.pay-summary.pay-pending .pay-summary-amount { color:var(--amber); }
+
+/* ── Error box ────────────────────────────── */
+.err-box { color:var(--red); font-size:12px; margin-bottom:10px; padding:8px 12px; background:var(--red-glow); border-radius:7px; border:1px solid rgba(220,38,38,.2); }
